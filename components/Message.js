@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function Message({ children, avatar, username, description }) {
   return (
-    <div className='bg-white p-8 border-b-2 rounded-lg'>
+    <div className='bg-white p-5 border-b-2 rounded-lg'>
       <div className='flex items-center gap-3 '>
         <Image
           src={avatar}

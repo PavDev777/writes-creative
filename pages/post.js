@@ -1,6 +1,6 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth, db } from '../utils/firebase'
 import { toast } from 'react-toastify'
@@ -9,10 +9,10 @@ export default function Post() {
   const [user, loading] = useAuthState(auth)
   const route = useRouter()
   const [post, setPost] = useState({ description: '' })
+  const routeData = route.query
 
   const submitPostHandler = async e => {
     e.preventDefault()
-
     if (!post.description)
       return toast.error('Description Field is empty', {
         autoClose: 1500,
@@ -36,6 +36,18 @@ export default function Post() {
     setPost({ description: '' })
     return route.push('/')
   }
+
+  const checkUser = async () => {
+    if (loading) return
+    if (!user) return route.push('/auth/login')
+  }
+
+  useEffect(() => {
+    checkUser()
+    if (routeData.id) {
+      setPost({ description: routeData.description, id: routeData.id })
+    }
+  }, [user, loading, routeData])
 
   return (
     <div className='my-20 p-12 shadow-lg rounded-lg max-w-md mx-auto'>
