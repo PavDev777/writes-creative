@@ -1,4 +1,10 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc
+} from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -25,16 +31,36 @@ export default function Post() {
         position: 'top-center'
       })
 
-    const collectionRef = collection(db, 'posts')
-    await addDoc(collectionRef, {
-      ...post,
-      user: user.uid,
-      avatar: user.photoURL,
-      username: user.displayName,
-      timestamp: serverTimestamp()
-    })
-    setPost({ description: '' })
-    return route.push('/')
+    //Update post
+    if (post?.hasOwnProperty('id')) {
+      const docRef = doc(db, 'posts', post.id)
+      const updatedPost = {
+        ...post,
+        timestamp: serverTimestamp()
+      }
+      await updateDoc(docRef, updatedPost)
+      toast.success('Post has been update!', {
+        autoClose: 1500,
+        position: 'top-center'
+      })
+      return route.push('/')
+    } else {
+      //Make a new post
+      const collectionRef = collection(db, 'posts')
+      await addDoc(collectionRef, {
+        ...post,
+        user: user.uid,
+        avatar: user.photoURL,
+        username: user.displayName,
+        timestamp: serverTimestamp()
+      })
+      setPost({ description: '' })
+      toast.success('Post has been made!', {
+        autoClose: 1500,
+        position: 'top-center'
+      })
+      return route.push('/')
+    }
   }
 
   const checkUser = async () => {
@@ -52,7 +78,9 @@ export default function Post() {
   return (
     <div className='my-20 p-12 shadow-lg rounded-lg max-w-md mx-auto'>
       <form onSubmit={submitPostHandler}>
-        <h1 className='text-2xl font-bold'>Create a new post</h1>
+        <h1 className='text-2xl font-bold'>
+          {post.hasOwnProperty('id') ? 'Edit your post' : 'Create a new post'}
+        </h1>
         <div className='py-2'>
           <h3 className='text-lg font-medium py-2'>Description</h3>
           <textarea
