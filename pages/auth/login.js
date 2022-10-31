@@ -9,10 +9,12 @@ export default function Login() {
   const route = useRouter()
   const [user] = useAuthState(auth)
   const googleProvider = new GoogleAuthProvider()
+
   const googleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider)
       route.push('/')
+      return result
     } catch (error) {
       console.log(error)
     }

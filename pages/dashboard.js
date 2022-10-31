@@ -22,8 +22,17 @@ export default function Dashboard() {
     await deleteDoc(docRef)
   }
 
-  useEffect(() => {
+  const checkUser = () => {
     if (!user) return route.push('/auth/login')
+  }
+
+  const logOut = async () => {
+    await auth.signOut()
+    route.push('/auth/login')
+  }
+
+  useEffect(() => {
+    checkUser()
   }, [user])
 
   return (
@@ -70,7 +79,7 @@ export default function Dashboard() {
       </div>
       <button
         className='font-medium text-white bg-gray-800 py-2 px-4 rounded-lg mt-6'
-        onClick={() => auth.signOut()}
+        onClick={logOut}
       >
         Sign out
       </button>
