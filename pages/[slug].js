@@ -20,11 +20,12 @@ export default function Details() {
 
   const submitMessageHandler = async () => {
     if (!auth.currentUser) return router.push('/auth/login')
-    if (!message) {
+    if (!message.length) {
       toast.error('Your message field is empty :(', {
         position: 'top-center',
         autoClose: 1500
       })
+      return
     }
     const docRef = doc(db, 'posts', routeData.id)
     await updateDoc(docRef, {
@@ -53,7 +54,7 @@ export default function Details() {
 
   return (
     <div>
-      <Message {...routeData}></Message>
+      <Message {...routeData} />
       <div className='my-4'>
         <div className='flex gap-x-2'>
           <input
@@ -64,7 +65,7 @@ export default function Details() {
             className='bg-gray-800 w-full p-2 text-white text-sm rounded-lg'
           />
           <button
-            onClick={() => submitMessageHandler()}
+            onClick={submitMessageHandler}
             className='bg-cyan-500 text-sm text-white py-2 px-4 rounded-lg'
           >
             Submit
@@ -87,7 +88,14 @@ export default function Details() {
                 />
                 <h2 className='font-medium'>{message?.username}</h2>
               </div>
-              <h2>{message.message}</h2>
+              <div className='flex items-center justify-between'>
+                <h2>{message.message}</h2>
+                <span className='text-xs text-slate-500'>{`${message.time
+                  .toDate()
+                  .toDateString()} ${message.time
+                  .toDate()
+                  .toLocaleTimeString()}`}</span>
+              </div>
             </div>
           ))}
         </div>

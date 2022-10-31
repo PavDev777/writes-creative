@@ -4,7 +4,7 @@ import { auth } from '../utils/firebase'
 import Image from 'next/image'
 
 export default function Nav() {
-  const [user, loading] = useAuthState(auth)
+  const [user] = useAuthState(auth)
   return (
     <nav className='flex justify-between items-center py-10'>
       <Link href='/'>

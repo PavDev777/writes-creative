@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 
 export default function Login() {
   const route = useRouter()
-  const [user, loading] = useAuthState(auth)
+  const [user] = useAuthState(auth)
   const googleProvider = new GoogleAuthProvider()
   const googleLogin = async () => {
     try {
@@ -21,8 +21,6 @@ export default function Login() {
   useEffect(() => {
     if (user) {
       route.push('/')
-    } else {
-      console.log('login')
     }
   }, [user])
 
